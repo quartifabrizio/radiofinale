@@ -1,19 +1,24 @@
 <template>
   <div>
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/contatti">Contatti</router-link>
-    </nav>
-    <router-view/>
+    <router-view />
+    <v-text-field v-model="searchText" label="Cerca radio" outlined></v-text-field>
 
     <div class="radio-cards">
-      <div class="radio-card" v-for="(radio, index) in radios" :key="index">
+      <div class="radio-card" v-for="(radio, index) in filteredRadios" :key="index">
         <h2>{{ radio.name }}</h2>
         <img :src="radio.favicon" alt="Radio Image" width="200">
         <p>{{ radio.description }}</p>
         <p>Paese: {{ radio.country }}</p>
-        <button @click="playAudio(radio.url)">Play</button>
+
+        <v-row>
+          <v-col cols="auto">
+            <v-btn block elevation="4" color="green" dark @click="playAudio(radio.url)">play</v-btn>
+          </v-col>
+
+          <v-col cols="auto">
+            <v-btn color="red" icon="mdi-heart" size="small" @click="saveRadio(radio)"></v-btn>
+          </v-col>
+        </v-row>
       </div>
     </div>
   </div>
@@ -25,6 +30,9 @@ export default {
   data() {
     return {
       radios: [],
+      savedRadios: [], // Array per tenere traccia delle radio salvate
+      searchText: '',
+      currentAudio: null,
     }
   },
   methods: {
@@ -36,14 +44,32 @@ export default {
         });
     },
     playAudio(audioUrl) {
+      if (this.currentAudio) {
+        this.currentAudio.pause();
+      }
       const audio = new Audio(audioUrl);
       audio.play();
+      this.currentAudio = audio;
+    },
+    saveRadio(radio) {
+      if (!this.savedRadios.includes(radio)) {
+        this.savedRadios.push(radio);
+        this.$emit('radio-saved', radio); // Emit event
+      }
+    }
+  },
+  computed: {
+    filteredRadios() {
+      return this.radios.filter(radio => {
+        return radio.name.toLowerCase().includes(this.searchText.toLowerCase());
+      });
     }
   },
   created() {
     this.getRadios();
   },
 }
+
 </script>
 
 <style scoped>
