@@ -1,4 +1,35 @@
 <template>
+
+<v-col cols="12">
+              <v-card color="#952175">
+                <div class="d-flex flex-no-wrap justify-space-between">
+                  <div>
+                    <v-card-title class="text-h5">
+                      Halcyon Days
+                    </v-card-title>
+
+                    <v-card-subtitle>Ellie Goulding</v-card-subtitle>
+
+                    <v-card-actions>
+                      <v-btn
+                        class="ms-2"
+                        icon="mdi-play"
+                        variant="text"
+                      ></v-btn>
+                    </v-card-actions>
+                  </div>
+
+                  <v-avatar
+                    class="ma-3"
+                    rounded="0"
+                    size="125"
+                  >
+                    <v-img src="https://cdn.vuetifyjs.com/images/cards/halcyon.png"></v-img>
+                  </v-avatar>
+                </div>
+              </v-card>
+            </v-col>
+
   <div class="Salva">
     <h1>Radio Salvate</h1>
     <div v-if="savedRadios && savedRadios.length === 0">
