@@ -19,15 +19,16 @@
                       {{ radio.country }}
                     </v-card-subtitle>
                     <v-card-actions>
-                      <v-btn @click="playSavedRadio(radio.url)" class="ms-2" icon color="primary" size="small">
-                        <v-icon>mdi-play</v-icon>
+
+                      <v-btn @click="playSavedRadio(radio.url)" class="ms-2" size="small" icon="mdi-play">
                       </v-btn>
-                      <v-btn icon color="red" @click="removeSavedRadio(index)" class="ms-2" size="small">
-                        <v-icon>mdi-delete</v-icon>
+
+                      <v-btn class="ms-2" icon="mdi-stop" size="small" variant="text" @click="pauseAudio">
                       </v-btn>
-                      <v-btn icon color="blue" @click="pauseAudio" class="ms-2" size="small">
-                        <v-icon>mdi-pause</v-icon>
+
+                      <v-btn icon="mdi-delete" color="red" @click="removeSavedRadio(index)" class="ms-2" size="small">
                       </v-btn>
+                      
                     </v-card-actions>
                   </div>
                   <v-avatar class="ma-3" rounded="0" size="100">
@@ -62,7 +63,7 @@ export default {
       if (this.currentAudio) {
         this.currentAudio.pause();
       }
-      
+
       const audio = new Audio(audioUrl);
       audio.play();
       this.currentAudio = audio;
@@ -78,7 +79,8 @@ export default {
 
 <style scoped>
 .small-card {
-  width: 100%; /* Each card occupies full width of the cell */
+  width: 100%;
+  /* Each card occupies full width of the cell */
   margin-bottom: 7px;
 }
 
@@ -87,7 +89,8 @@ export default {
   align-items: center;
   height: 20px;
   margin-left: 10px;
-  margin-top: 100px; /* Adjust if necessary */
+  margin-top: 100px;
+  /* Adjust if necessary */
 }
 
 .bar {
@@ -106,10 +109,9 @@ export default {
   animation-delay: 0.1s;
 }
 
-.bar:nth
-
-.small-card {
-  width: 100%; /* Each card occupies full width of the cell */
+.bar:nth .small-card {
+  width: 100%;
+  /* Each card occupies full width of the cell */
   margin-bottom: 7px;
 }
 
@@ -118,7 +120,8 @@ export default {
   align-items: center;
   height: 20px;
   margin-left: 10px;
-  margin-top: 100px; /* Adjust if necessary */
+  margin-top: 100px;
+  /* Adjust if necessary */
 }
 
 .bar {
@@ -146,12 +149,16 @@ export default {
 }
 
 table {
-  width: 100%; /* Make the table as wide as the display */
-  table-layout: fixed; /* Fix the column widths */
+  width: 100%;
+  /* Make the table as wide as the display */
+  table-layout: fixed;
+  /* Fix the column widths */
 }
 
 td {
-  padding: 8px; /* Add padding inside cells */
-  box-sizing: border-box; /* Ensure padding doesn't affect total cell width */
+  padding: 8px;
+  /* Add padding inside cells */
+  box-sizing: border-box;
+  /* Ensure padding doesn't affect total cell width */
 }
 </style>

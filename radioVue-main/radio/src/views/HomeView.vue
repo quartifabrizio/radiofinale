@@ -15,20 +15,15 @@
                     {{ radio.name }}
                   </v-card-title>
                   <v-card-subtitle class="text-caption"> <!-- Riduciamo la dimensione del sottotitolo -->
-                    {{ radio.country }}
+                    {{ radio.country }}"
                   </v-card-subtitle>
                   <v-card-actions>
-                    <v-btn @click="playAudio(radio.url)" class="ms-2" icon="mdi-play" variant="text"
-                      size="small"></v-btn>
-                    <v-btn variant="text" icon="mdi-heart" size="small" @click="saveRadio(radio)" class="ms-2"></v-btn>
-                    <v-btn class="ms-2" icon="mdi-stop" size="small" variant="text" @click="stopAudio"></v-btn>
 
-                    <div v-if="radio.playing" class="sound-wave">
-                      <div class="bar"></div>
-                      <div class="bar"></div>
-                      <div class="bar"></div>
-                      <div class="bar"></div>
-                    </div>
+                    <v-btn @click="playAudio(radio.url)" class="ms-2" icon="mdi-play" variant="text" size="small"></v-btn>
+
+                    <v-btn @click="saveRadio(radio)" variant="text" icon="mdi-heart" size="small" class="ms-2"></v-btn>
+
+                    <v-btn class="ms-2" icon="mdi-stop" size="small" variant="text" @click="stopAudio"></v-btn>
 
                   </v-card-actions>
                 </div>
@@ -45,6 +40,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'HomeView',
   data() {
@@ -103,8 +99,9 @@ export default {
         }
         return chunks;
       }, []);
-    }
+    },
   },
+
   computed: {
     filteredRadios() {
       return this.radios.filter(radio => {
@@ -123,6 +120,11 @@ export default {
 <style scoped>
 .small-card {
   width: 100%; /* Ogni card occupa tutta la larghezza della cella */
+  margin-bottom: 7px;
+}
+
+.card-with-background {
+  width: 100%;
   margin-bottom: 7px;
 }
 
