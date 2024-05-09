@@ -20,7 +20,7 @@
                     </v-card-subtitle>
                     <v-card-actions>
 
-                      <v-btn @click="playSavedRadio(radio.url)" class="ms-2" size="small" icon="mdi-play">
+                      <v-btn @click="playSavedRadio(radio.url, radio)" class="ms-2" size="small" icon="mdi-play">
                       </v-btn>
 
                       <v-btn class="ms-2" icon="mdi-stop" size="small" variant="text" @click="pauseAudio">
@@ -45,12 +45,16 @@
 </template>
 
 <script>
+import Hls from 'hls.js';
+
 export default {
   name: 'SavedRadioView',
   data() {
     return {
       savedRadios: JSON.parse(localStorage.getItem('savedRadios')) || [],
-      currentAudio: null // Added to keep track of the currently playing audio
+      currentAudio: null, // Aggiunto per tenere traccia dell'audio attualmente in riproduzione
+      currentPlayingRadio: null, // Aggiunto per tenere traccia della radio attualmente in riproduzione
+      hls: null // Aggiunto per tenere traccia dell'istanza Hls
     };
   },
   methods: {
@@ -58,15 +62,39 @@ export default {
       this.savedRadios.splice(index, 1);
       localStorage.setItem('savedRadios', JSON.stringify(this.savedRadios));
     },
-    playSavedRadio(audioUrl) {
-      // Pause current audio if any
-      if (this.currentAudio) {
+    playSavedRadio(url, radio) {
+      // Inizializza this.currentAudio se è null
+      if (!this.currentAudio) {
+        this.currentAudio = new Audio();
+      }
+
+      if (this.currentPlayingRadio && this.currentPlayingRadio !== radio) {
+        this.currentPlayingRadio.isPlaying = false;
+        if (this.hls) {
+          this.hls.destroy();
+          this.hls = null;
+        }
         this.currentAudio.pause();
       }
 
-      const audio = new Audio(audioUrl);
-      audio.play();
-      this.currentAudio = audio;
+      if (url.endsWith('.m3u8')) {
+        if (Hls.isSupported()) {
+          this.hls = new Hls();
+          this.hls.loadSource(url);
+          this.hls.attachMedia(this.currentAudio);
+          this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            this.currentAudio.play();
+          });
+        } else if (this.currentAudio.canPlayType('application/vnd.apple.mpegurl')) {
+          this.currentAudio.src = url;
+          this.currentAudio.play();
+        }
+      } else {
+        this.currentAudio.src = url;
+        this.currentAudio.play();
+      }
+
+      this.currentPlayingRadio = radio;
     },
     pauseAudio() {
       if (this.currentAudio) {
@@ -82,70 +110,6 @@ export default {
   width: 100%;
   /* Each card occupies full width of the cell */
   margin-bottom: 7px;
-}
-
-.sound-wave {
-  display: flex;
-  align-items: center;
-  height: 20px;
-  margin-left: 10px;
-  margin-top: 100px;
-  /* Adjust if necessary */
-}
-
-.bar {
-  width: 4px;
-  height: 100%;
-  margin: 0 2px;
-  background-color: #333;
-  animation: pulse 0.8s infinite ease-in-out alternate;
-}
-
-.bar:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.bar:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.bar:nth .small-card {
-  width: 100%;
-  /* Each card occupies full width of the cell */
-  margin-bottom: 7px;
-}
-
-.sound-wave {
-  display: flex;
-  align-items: center;
-  height: 20px;
-  margin-left: 10px;
-  margin-top: 100px;
-  /* Adjust if necessary */
-}
-
-.bar {
-  width: 4px;
-  height: 100%;
-  margin: 0 2px;
-  background-color: #333;
-  animation: pulse 0.8s infinite ease-in-out alternate;
-}
-
-.bar:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.bar:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.bar:nth-child(3) {
-  animation-delay: 0.2s;
-}
-
-.bar:nth-child(4) {
-  animation-delay: 0.3s;
 }
 
 table {
