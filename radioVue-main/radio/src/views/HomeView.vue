@@ -19,7 +19,9 @@
                   </v-card-subtitle>
                   <v-card-actions>
 
-                    <v-btn @click="playAudio(radio.url)" class="ms-2" icon="mdi-play" variant="text" size="small"></v-btn>
+                    <v-btn @click="playAudio(radio.url)" class="ms-2" icon="mdi-play" variant="text"
+                      size="small"></v-btn>
+                    <div ref="player"></div>
 
                     <v-btn @click="saveRadio(radio)" variant="text" icon="mdi-heart" size="small" class="ms-2"></v-btn>
 
@@ -40,16 +42,18 @@
 </template>
 
 <script>
-
+import Hls from 'hls.js';
 export default {
   name: 'HomeView',
   data() {
     return {
       radios: [],
-      savedRadios: JSON.parse(localStorage.getItem('savedRadios')) || [], // Initialize savedRadios from local storage
+      savedRadios: JSON.parse(localStorage.getItem('savedRadios')) || [],
       searchText: '',
-      currentAudio: null,
-    }
+      currentAudio: new Audio(), // Initialize audio element
+      currentPlayingRadio: null, // Initialize currentPlayingRadio
+      hls: null // Initialize HLS instance
+    };
   },
 
   methods: {
@@ -60,13 +64,54 @@ export default {
           this.radios = data;
         });
     },
-    playAudio(audioUrl) {
-      if (this.currentAudio) {
-        this.currentAudio.pause();
+    playAudio(url, radio) {
+  // Initialize this.audio if it's null
+  if (!this.currentAudio) {
+    this.currentAudio = new Audio();
+  }
+
+  if (this.currentPlayingRadio && this.currentPlayingRadio !== radio) {
+    this.currentPlayingRadio.isPlaying = false;
+    if (this.hls) {
+      this.hls.destroy();
+      this.hls = null;
+    }
+    this.currentAudio.pause();
+  }
+
+  if (url.endsWith('.m3u8')) {
+    if (Hls.isSupported()) {
+      this.hls = new Hls();
+      this.hls.loadSource(url);
+      this.hls.attachMedia(this.currentAudio);
+      this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        this.currentAudio.play();
+      });
+    } else if (this.currentAudio.canPlayType('application/vnd.apple.mpegurl')) {
+      this.currentAudio.src = url;
+      this.currentAudio.play();
+    }
+  } else {
+    this.currentAudio.src = url;
+    this.currentAudio.play();
+  }
+
+  this.currentPlayingRadio = radio;
+},
+    togglePlayback(radio) {
+      if (radio.isPlaying) {
+        this.audio.pause();
+        if (this.hls) {
+          this.hls.stopLoad();
+        }
+      } else {
+        this.playAudio(radio.url, radio);
       }
-      const audio = new Audio(audioUrl);
-      audio.play();
-      this.currentAudio = audio;
+      radio.isPlaying = !radio.isPlaying;
+    },
+    toggleFavorite(radio) {
+      radio.isFavorite = !radio.isFavorite;
+      this.saveToLocalStorage();
     },
     getRadioImage(radio) {
       // Verifica se radio.favicon è vuoto o contiene solo spazi bianchi
@@ -119,7 +164,8 @@ export default {
 </script>
 <style scoped>
 .small-card {
-  width: 100%; /* Ogni card occupa tutta la larghezza della cella */
+  width: 100%;
+  /* Ogni card occupa tutta la larghezza della cella */
   margin-bottom: 7px;
 }
 
@@ -155,7 +201,8 @@ nav a.router-link-exact-active {
   height: 20px;
   margin-left: 10px;
   /* Adjust this if necessary */
-  margin-top: 100px; /* Added to push the sound wave down */
+  margin-top: 100px;
+  /* Added to push the sound wave down */
 }
 
 .bar {
@@ -183,12 +230,16 @@ nav a.router-link-exact-active {
 }
 
 table {
-  width: 100%; /* Rendi la tabella larga quanto il display */
-  table-layout: fixed; /* Fissa la larghezza delle colonne */
+  width: 100%;
+  /* Rendi la tabella larga quanto il display */
+  table-layout: fixed;
+  /* Fissa la larghezza delle colonne */
 }
 
 td {
-  padding: 8px; /* Aggiunge spazio interno alle celle */
-  box-sizing: border-box; /* Assicura che il padding non influenzi la larghezza totale della cella */
+  padding: 8px;
+  /* Aggiunge spazio interno alle celle */
+  box-sizing: border-box;
+  /* Assicura che il padding non influenzi la larghezza totale della cella */
 }
 </style>
