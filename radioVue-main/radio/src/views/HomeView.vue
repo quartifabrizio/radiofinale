@@ -58,12 +58,14 @@ export default {
 
   methods: {
     getRadios() {
-      fetch('https://nl1.api.radio-browser.info/json/stations/search?limit=100&countrycode=IT&hidebroken=true&order=clickcount&reverse=true')
-        .then(response => response.json())
-        .then(data => {
-          this.radios = data;
-        });
-    },
+  fetch('https://nl1.api.radio-browser.info/json/stations/search?limit=100&countrycode=IT&hidebroken=true&order=clickcount&reverse=true')
+    .then(response => response.json())
+    .then(data => {
+      this.radios = data;
+      console.log('Radios:', this.radios); // Aggiungi questo console.log per visualizzare tutte le informazioni delle radio
+    });
+},
+
     playAudio(url, radio) {
   // Initialize this.audio if it's null
   if (!this.currentAudio) {
