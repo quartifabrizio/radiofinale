@@ -230,6 +230,11 @@ nav a.router-link-exact-active {
 .bar:nth-child(4) {
   animation-delay: 0.3s;
 }
+.play-gif {
+  width: 30px; /* Imposta la larghezza desiderata */
+  height: 30px; /* Imposta l'altezza desiderata */
+}
+
 
 table {
   width: 100%;
