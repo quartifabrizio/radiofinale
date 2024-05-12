@@ -1,14 +1,12 @@
 <template class="tm">
-    <div class="navbar" v-if="selectedRadio">
+    <div ref="container"></div>
+    <div id="selectedRadioInfo" class="selected-radio-info" v-if="selectedRadio">
         <img :src="getRadioImage(selectedRadio)" class="radio-logo" alt="Radio logo">
         <h4>{{ selectedRadio.name }}</h4>
         <h3>{{ selectedRadio.country }}</h3>
         <v-btn :icon="selectedRadio.playing ? 'mdi-stop' : 'mdi-play'" @click="togglePlayPause(selectedRadio)"></v-btn>
-       
     </div>
-    <div ref="container"></div>
 </template>
-
 
 <script>
 import * as THREE from 'three';
@@ -39,12 +37,10 @@ export default {
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
         window.addEventListener('click', this.onDocumentMouseClick);
-
     },
     beforeUnmount() {
         window.removeEventListener('resize', this.handleWindowResize);
         window.removeEventListener('click', this.onDocumentMouseClick);
-
     },
     methods: {
         init() {
@@ -226,12 +222,12 @@ export default {
                 });
         },
         getRadioImage(radio) {
-      if (radio.playing) {
-        return 'https://whiz-kid.de/images/sound.gif';
-      } else {
-        return radio.favicon ? radio.favicon : "https://cdn-icons-png.freepik.com/256/508/508206.png?semt=ais_hybrid";
-      }
-    },
+            if (radio.playing) {
+                return 'https://i.pinimg.com/originals/a5/5a/68/a55a685b8375807667122027d72de120.gif';
+            } else {
+                return radio.favicon ? radio.favicon : "https://img.freepik.com/vetores-premium/icone-ou-simbolo-vintage-da-estacao-de-radio-online_8071-25787.jpg";
+            }
+        },
         pauseRadio(radio) {
             radio.audioPlayer.pause();
             radio.playing = false;
@@ -243,39 +239,26 @@ export default {
                 }
             });
         },
-   
-        },
-        created() {
-            this.getRadios();
-           
-        }
+    },
+    created() {
+        this.getRadios();
     }
-
+}
 </script>
 
 <style scoped>
-.navbar {
+.selected-radio-info {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    /* Sposta l'ombra verso l'alto */
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+    top: 20px;
+    left: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
     padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
-
 .radio-logo {
-    width: 50px;
-    height: 50px;
-    border-radius: 25px;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
 }
-
-.tm{
-background-color: black;
-}
-
 </style>
