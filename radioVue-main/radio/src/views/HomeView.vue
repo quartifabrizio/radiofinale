@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <router-view />
@@ -249,4 +250,43 @@ td {
   box-sizing: border-box;
   /* Assicura che il padding non influenzi la larghezza totale della cella */
 }
+
+@media screen and (max-width: 768px) {
+  .v-card__title, .v-card__subtitle {
+    font-size: 0.9rem; /* Riduci la dimensione del titolo e del sottotitolo sui dispositivi mobili */
+
+    .small-card {
+  margin-bottom: 15px;
+}
+
+.v-card__title, .v-card__subtitle {
+  font-size: 1rem; /* Riduci la dimensione del titolo e del sottotitolo */
+}
+
+.v-btn {
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.v-img {
+  object-fit: cover; /* Assicura che le immagini si adattino al contenitore */
+}
+
+/* Aggiungi margini per separare le cards */
+.v-card {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+/* Imposta un padding per il container per spaziare le cards */
+.v-container {
+  padding: 10px;
+}
+
+/* Imposta il display inline per il titolo della card */
+.v-card__title {
+  display: inline;
+}
+  }}
+
 </style>
